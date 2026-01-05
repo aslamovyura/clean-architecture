@@ -3,8 +3,9 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Optional, Set
 
-@dataclass(frozen=True)
+@dataclass(unsafe_hash=True)
 class OrderLine:
+    # id: Optional[int]
     orderid: str
     sku: str
     qty: int
@@ -12,6 +13,7 @@ class OrderLine:
 
 class Batch:
     def __init__(self, ref: str, sku: str, qty: int, eta: Optional[date]):
+        # self.id = id
         self.reference = ref
         self.sku = sku
         self.eta = eta

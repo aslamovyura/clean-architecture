@@ -1,13 +1,7 @@
 from sqlalchemy import UUID, ForeignKey, Integer, Date, Boolean, Column, Enum, LargeBinary, String, Table
 from sqlalchemy.orm import composite, relationship
 
-# from app.domain.entities.user import User
-# from app.domain.enums.user_role import UserRole
-# from app.domain.value_objects.user_id import UserId
-# from app.domain.value_objects.user_password_hash import UserPasswordHash
-# from app.domain.value_objects.username import Username
 from app.infrastructure.persistence_sqla.registry import mapper_registry
-
 from app.domain.entities import OrderLine, Batch
 
 
@@ -39,13 +33,32 @@ allocations = Table(
 )
 
 
-def map_batches_table() -> None:
-    lines_mapper = mapper_registry.map_imperatively(OrderLine, order_lines)
-    mapper_registry.map_imperatively(Batch,
+def start_mappers() -> None:
+    lines_mapper = mapper_registry.map_imperatively(
+        OrderLine,
+        order_lines,
+        properties={
+            # 'id': order_lines.c.id,
+            'sku': order_lines.c.sku,
+            'qty': order_lines.c.qty,
+            'orderid': order_lines.c.orderid,
+        }
+    )
+    
+    mapper_registry.map_imperatively(
+        Batch,
         batches,
         properties={
-            "_allocations": relationship(
-                lines_mapper, secondary=allocations, collection_class=set,
+            # 'id': batches.c.id,
+            'reference': batches.c.reference,  # Map reference column
+            'sku': batches.c.sku,
+            '_purchased_quantity': batches.c._purchased_quantity,
+            'eta': batches.c.eta,
+            '_allocations': relationship(
+                lines_mapper,
+                secondary=allocations,
+                collection_class=set,
+                backref="batches"  # Optional: for bidirectional relationship
             )
-        },
+        }
     )
