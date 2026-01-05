@@ -1,5 +1,5 @@
 from typing import List
-from app.domain.entities import OrderLine, Batch
+from app.domain.entities.batch import OrderLine, Batch
 from app.domain.exceptions import OutOfStockError
 
 
