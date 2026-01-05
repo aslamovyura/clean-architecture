@@ -1,5 +1,5 @@
-from sqlalchemy import UUID, ForeignKey, Integer, Date, Boolean, Column, Enum, LargeBinary, String, Table
-from sqlalchemy.orm import composite, relationship
+from sqlalchemy import ForeignKey, Integer, Date, Column, String, Table
+from sqlalchemy.orm import relationship
 
 from app.infrastructure.persistence_sqla.registry import mapper_registry
 from app.domain.entities import OrderLine, Batch
@@ -38,7 +38,6 @@ def start_mappers() -> None:
         OrderLine,
         order_lines,
         properties={
-            # 'id': order_lines.c.id,
             'sku': order_lines.c.sku,
             'qty': order_lines.c.qty,
             'orderid': order_lines.c.orderid,
@@ -49,7 +48,6 @@ def start_mappers() -> None:
         Batch,
         batches,
         properties={
-            # 'id': batches.c.id,
             'reference': batches.c.reference,  # Map reference column
             'sku': batches.c.sku,
             '_purchased_quantity': batches.c._purchased_quantity,
