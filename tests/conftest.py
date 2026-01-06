@@ -2,7 +2,7 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, clear_mappers
 
-from app.infrastructure.persistence_sqla.mappings.orm import start_mappers
+from app.infrastructure.persistence_sqla.mappings.orm import map_tables
 from app.infrastructure.persistence_sqla.registry import mapper_registry
 
 @pytest.fixture
@@ -14,6 +14,6 @@ def in_memory_db():
 
 @pytest.fixture
 def session(in_memory_db):
-    start_mappers()
+    map_tables()
     yield sessionmaker(bind=in_memory_db)()
     clear_mappers()
