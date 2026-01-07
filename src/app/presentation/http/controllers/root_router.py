@@ -2,9 +2,10 @@ from fastapi import APIRouter
 from fastapi.responses import RedirectResponse
 
 from app.presentation.http.controllers.api_v1_router import create_api_v1_router
+from app.setup.config.settings import AppSettings
 
 
-def create_root_router() -> APIRouter:
+def create_root_router(settings: AppSettings) -> APIRouter:
     router = APIRouter()
 
     @router.get("/", tags=["General"])
@@ -15,5 +16,5 @@ def create_root_router() -> APIRouter:
         """
         return RedirectResponse(url="docs/")
 
-    router.include_router(create_api_v1_router())
+    router.include_router(create_api_v1_router(settings))
     return router

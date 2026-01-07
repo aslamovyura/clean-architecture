@@ -8,6 +8,7 @@ from fastapi.responses import ORJSONResponse
 from app.infrastructure.persistence_sqla.mappings.orm import map_tables
 
 from app.presentation.http.controllers.root_router import create_root_router
+from app.setup.config.settings import AppSettings
 # from app.setup.config.settings import AppSettings
 # from app.setup.ioc.provider_registry import get_providers
 
@@ -23,7 +24,7 @@ from app.presentation.http.controllers.root_router import create_root_router
 #     )
 
 
-def create_web_app() -> FastAPI:
+def create_web_app(settings: AppSettings) -> FastAPI:
     app = FastAPI(
         # lifespan=lifespan, // TODO: add after the DI container.
         default_response_class=ORJSONResponse,
@@ -32,7 +33,7 @@ def create_web_app() -> FastAPI:
     # app.add_middleware(ASGIAuthMiddleware)
     
     # Good place to register global exception handlers
-    app.include_router(create_root_router())
+    app.include_router(create_root_router(settings))
     return app
 
 

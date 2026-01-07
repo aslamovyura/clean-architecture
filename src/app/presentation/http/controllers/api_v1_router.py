@@ -2,10 +2,11 @@ from fastapi import APIRouter
 
 from app.presentation.http.controllers.allocations.router import create_allocations_router
 from app.presentation.http.controllers.general.router import create_general_router
+from app.setup.config.settings import AppSettings
 
 
-def create_api_v1_router() -> APIRouter:
+def create_api_v1_router(settings: AppSettings) -> APIRouter:
     router = APIRouter(prefix="/api/v1")
     router.include_router(create_general_router())
-    router.include_router(create_allocations_router())
+    router.include_router(create_allocations_router(settings))
     return router
