@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Integer, Date, Column, String, Table
+from sqlalchemy import ForeignKey, Integer, Date, Column, MetaData, String, Table
 from sqlalchemy.orm import relationship
 
 from app.infrastructure.persistence_sqla.registry import mapper_registry
@@ -33,7 +33,7 @@ allocations = Table(
 )
 
 
-def map_tables() -> None:
+def map_tables() -> MetaData:
     lines_mapper = mapper_registry.map_imperatively(
         OrderLine,
         order_lines,
@@ -60,3 +60,5 @@ def map_tables() -> None:
             )
         }
     )
+    
+    return mapper_registry.metadata
