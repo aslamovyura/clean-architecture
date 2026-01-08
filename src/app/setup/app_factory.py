@@ -5,8 +5,7 @@ from dishka import AsyncContainer, Provider, make_async_container
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
-from app.infrastructure.persistence_sqla.mappings import orm
-from app.infrastructure.persistence_sqla.mappings.orm import map_tables
+from app.infrastructure.persistence_sqla.mappings import map_tables
 
 from app.presentation.http.controllers.root_router import create_root_router
 from app.setup.config.settings import AppSettings
@@ -34,7 +33,7 @@ def create_web_app(settings: AppSettings) -> FastAPI:
     # app.add_middleware(ASGIAuthMiddleware)
     
     # Good place to register global exception handlers
-    orm.map_tables() 
+    map_tables() 
     app.include_router(create_root_router(settings))
     return app
 

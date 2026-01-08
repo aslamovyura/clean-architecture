@@ -1,8 +1,8 @@
 from sqlalchemy import ForeignKey, Integer, Date, Column, MetaData, String, Table
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapper
 
 from app.infrastructure.persistence_sqla.registry import mapper_registry
-from app.domain.entities import OrderLine, Batch
+from app.domain.entities import OrderLine, Batch, Product
 
 
 order_lines = Table(
@@ -19,7 +19,7 @@ batches = Table(
     mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("reference", String(255)),
-    Column("sku", String(255)),
+    Column("sku", ForeignKey("products.sku")),
     Column("_purchased_quantity", Integer, nullable=False),
     Column("eta", Date, nullable=True),
 )
@@ -33,7 +33,7 @@ allocations = Table(
 )
 
 
-def map_tables() -> MetaData:
+def map_batch_tables() -> Mapper[Batch]:
     lines_mapper = mapper_registry.map_imperatively(
         OrderLine,
         order_lines,
@@ -44,7 +44,7 @@ def map_tables() -> MetaData:
         }
     )
     
-    mapper_registry.map_imperatively(
+    batches_mapper = mapper_registry.map_imperatively(
         Batch,
         batches,
         properties={
@@ -61,4 +61,4 @@ def map_tables() -> MetaData:
         }
     )
     
-    return mapper_registry.metadata
+    return batches_mapper

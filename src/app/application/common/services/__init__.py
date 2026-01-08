@@ -1,0 +1,1 @@
+from app.application.common.services.product_service import *

@@ -1,17 +1,11 @@
 from fastapi import APIRouter
 from pydantic import BaseModel, ConfigDict
-from starlette.requests import Request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.application.common import services
-from app.application.common.ports import repositories
-from app.application.common.services import allocation
-from app.domain import entities
+from app.application.common.services import product_service
 from app.domain.exceptions.batch import OutOfStockError
-from app.infrastructure.adapters.base_repository import BatchRepository
 from app.infrastructure.adapters.unit_of_work import UnitOfWork
-from app.infrastructure.persistence_sqla.mappings import orm
 from app.setup.config.settings import AppSettings
 
 
@@ -30,8 +24,8 @@ def create_allocate_router(settings: AppSettings) -> APIRouter:
     @router.post("/allocate")
     async def allocate_endpoint(request: AllocateRequestPydantic) -> dict[str, str]:
         try:
-            batchref = allocation.allocate(request.orderid, request.sku, request.qty, UnitOfWork(get_session))
-        except (OutOfStockError, allocation.InvalidSkuError) as e:
+            batchref = product_service.allocate(request.orderid, request.sku, request.qty, UnitOfWork(get_session))
+        except (OutOfStockError, product_service.InvalidSkuError) as e:
             return {"message": str(e), "status": "400"}
 
         return {"batchref": batchref, "status": "201"}

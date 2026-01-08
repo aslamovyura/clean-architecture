@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, clear_mappers
 from sqlalchemy.exc import OperationalError
 
-from app.infrastructure.persistence_sqla.mappings.orm import map_tables
+from app.infrastructure.persistence_sqla.mappings import map_tables
 from app.infrastructure.persistence_sqla.registry import mapper_registry
 
 from app.setup.config.loader import ValidEnvs
@@ -72,17 +72,22 @@ def wait_for_webapp_to_come_up():
 
 @pytest.fixture(scope="session")
 def postgres_db():
-    engine = create_engine(postgres_uri)
+    engine = create_engine(postgres_uri, isolation_level="REPEATABLE READ",)
     wait_for_postgres_to_come_up(engine)
     mapper_registry.metadata.create_all(engine)
     return engine
 
 
 @pytest.fixture
-def postgres_session(postgres_db):
+def postgres_session_factory(postgres_db):
     map_tables()
-    yield sessionmaker(bind=postgres_db)()
+    yield sessionmaker(bind=postgres_db)
     clear_mappers()
+
+
+@pytest.fixture
+def postgres_session(postgres_session_factory):
+    return postgres_session_factory()
 
 
 @pytest.fixture

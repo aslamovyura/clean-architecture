@@ -1,10 +1,10 @@
 import abc
 
-from app.application.common.ports.repositories.base import AbstractRepository
+from app.application.common.ports.product_repository import AbstractProductRepository
 
 
 class AbstractUnitOfWork(abc.ABC):
-    batches: AbstractRepository
+    products: AbstractProductRepository
 
     def __enter__(self):
         return self

@@ -1,16 +1,15 @@
-from app.application.common.ports.unit_of_work import AbstractUnitOfWork
-from app.infrastructure.adapters.base_repository import BatchRepository
+from app.application.common.ports import AbstractUnitOfWork
+from app.infrastructure.adapters import ProductRepository
 
 
 class UnitOfWork(AbstractUnitOfWork):
     def __init__(self, 
-                #  session_factory=DEFAULT_SESSION_FACTORY):
                  session_factory):
                  self.session_factory = session_factory
 
     def __enter__(self):
         self.session = self.session_factory()
-        self.batches = BatchRepository(self.session)
+        self.products = ProductRepository(self.session)
         return super().__enter__()
 
     def __exit__(self, *args):

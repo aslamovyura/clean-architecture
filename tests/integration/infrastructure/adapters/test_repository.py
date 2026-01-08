@@ -1,20 +1,35 @@
 from sqlalchemy import text
 from app.domain.entities import Batch, OrderLine
-from app.infrastructure.adapters.base_repository import BatchRepository
+from app.domain.entities.product import Product
+from app.infrastructure.adapters.product_repository import ProductRepository
 
 
 def test_repository_can_save_a_batch(session):
-    batch = Batch("batch1", "RUSTY-SOAPDISH", 100, eta=None)
-
-    repo = BatchRepository(session)
-    repo.add(batch)
+    sku = "RUSTY-SOAPDISH"
+    batch = Batch("batch1", sku, 100, eta=None)
+    product = Product(sku, [batch])
+    
+    repo = ProductRepository(session)
+    repo.add(product)
     session.commit()
 
-    rows = session.execute(text(
+    batches = session.execute(text(
         'SELECT reference, sku, _purchased_quantity, eta FROM "batches"'
     ))
-    assert list(rows) == [("batch1", "RUSTY-SOAPDISH", 100, None)]
+    
+    products = session.execute(text(
+        'SELECT sku, version_number FROM "products"'
+    ))
+    assert list(batches) == [("batch1", sku, 100, None)]
+    assert list(products) == [(sku, 0)]
 
+
+def insert_product(session):
+    session.execute(text(
+        "INSERT INTO products (sku, version_number)"
+        ' VALUES ("GENERIC-SOFA", 1)'
+        )
+    )
 
 def insert_order_line(session):
     session.execute(text(
@@ -49,19 +64,19 @@ def insert_allocation(session, orderline_id, batch_id):
     )
 
 
-def test_repository_can_retrieve_a_batch_with_allocations(session):
+
+def test_repository_can_retrieve_a_product_with_batches(session):
+    sku = "GENERIC-SOFA"
+    insert_product(session)
     orderline_id = insert_order_line(session)
     batch1_id = insert_batch(session, "batch1")
     insert_batch(session, "batch2")
     insert_allocation(session, orderline_id, batch1_id)
 
-    repo = BatchRepository(session)
-    retrieved = repo.get("batch1")
+    repo = ProductRepository(session)
+    retrieved : Product = repo.get(sku)
 
-    expected = Batch("batch1", "GENERIC-SOFA", 100, eta=None)
-    assert retrieved == expected  # Batch.__eq__ only compares reference
+    expected = Product("GENERIC-SOFA", [], 1)
     assert retrieved.sku == expected.sku
-    assert retrieved._purchased_quantity == expected._purchased_quantity
-    assert retrieved._allocations == {
-        OrderLine("order1", "GENERIC-SOFA", 12),
-    }
+    assert retrieved.version_number == 1
+    assert len(retrieved.batches) == 2

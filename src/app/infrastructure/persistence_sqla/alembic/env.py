@@ -9,8 +9,7 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from app.infrastructure.persistence_sqla.mappings.orm import map_tables
-from app.infrastructure.persistence_sqla.registry import mapper_registry
+from app.infrastructure.persistence_sqla.mappings import map_tables
 from app.setup.config.loader import ValidEnvs
 from app.setup.config.settings import AppSettings, load_settings
 
