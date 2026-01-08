@@ -15,7 +15,7 @@ from app.setup.config.loader import ValidEnvs
 from app.setup.config.settings import load_settings
 
 settings = load_settings(ValidEnvs.DEV)
-postgres_uri = settings.postgres.dsn
+postgres_uri: str = settings.postgres.dsn
 
 host = os.environ.get("API_HOST", "localhost")
 port = 8000 if host == "localhost" else 80
@@ -39,11 +39,16 @@ def in_memory_db():
 
 
 @pytest.fixture
-def session(in_memory_db):
+def session_factory(in_memory_db):
     map_tables()
-    yield sessionmaker(bind=in_memory_db)()
+    yield sessionmaker(bind=in_memory_db)
     clear_mappers()
-    
+
+
+@pytest.fixture
+def session(session_factory):
+    return session_factory()
+
 
 def wait_for_postgres_to_come_up(engine):
     deadline = time.time() + 10

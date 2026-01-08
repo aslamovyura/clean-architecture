@@ -1,12 +1,12 @@
 from sqlalchemy import text
 from app.domain.entities import Batch, OrderLine
-from app.infrastructure.adapters.base_repository import SqlAlchemyRepository
+from app.infrastructure.adapters.base_repository import BatchRepository
 
 
 def test_repository_can_save_a_batch(session):
     batch = Batch("batch1", "RUSTY-SOAPDISH", 100, eta=None)
 
-    repo = SqlAlchemyRepository(session)
+    repo = BatchRepository(session)
     repo.add(batch)
     session.commit()
 
@@ -55,7 +55,7 @@ def test_repository_can_retrieve_a_batch_with_allocations(session):
     insert_batch(session, "batch2")
     insert_allocation(session, orderline_id, batch1_id)
 
-    repo = SqlAlchemyRepository(session)
+    repo = BatchRepository(session)
     retrieved = repo.get("batch1")
 
     expected = Batch("batch1", "GENERIC-SOFA", 100, eta=None)
