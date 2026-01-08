@@ -21,7 +21,7 @@ class AllocateRequestPydantic(BaseModel):
     qty: int
 
 
-def create_allocation_router(settings: AppSettings) -> APIRouter:
+def create_allocate_router(settings: AppSettings) -> APIRouter:
     router = APIRouter()
 
     orm.map_tables()
@@ -31,10 +31,9 @@ def create_allocation_router(settings: AppSettings) -> APIRouter:
     async def allocate_endpoint(request: AllocateRequestPydantic) -> dict[str, str]:
         session = get_session()
         repo = SqlAlchemyRepository(session)
-        line = entities.OrderLine(request.orderid, request.sku, request.qty)
 
         try:
-            batchref = allocation.allocate(line, repo, session)
+            batchref = allocation.allocate(request.orderid, request.sku, request.qty, repo, session)
         except (OutOfStockError, allocation.InvalidSkuError) as e:
             return {"message": str(e), "status": "400"}
 
