@@ -22,7 +22,7 @@ class AddBatchRequestPydantic(BaseModel):
 def create_add_batch_router(settings: AppSettings) -> APIRouter:
     router = APIRouter()
 
-    get_session = sessionmaker(bind=create_engine(settings.postgres.dsn))
+    get_session = sessionmaker(bind=create_engine(settings.postgres.dsn, isolation_level="REPEATABLE READ"))
 
     @router.post("/add_batch")
     async def add_batch_endpoint(request: AddBatchRequestPydantic) -> dict[str, str]:

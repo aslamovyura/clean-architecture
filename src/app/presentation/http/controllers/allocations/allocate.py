@@ -19,7 +19,7 @@ class AllocateRequestPydantic(BaseModel):
 def create_allocate_router(settings: AppSettings) -> APIRouter:
     router = APIRouter()
 
-    get_session = sessionmaker(bind=create_engine(settings.postgres.dsn))
+    get_session = sessionmaker(bind=create_engine(settings.postgres.dsn, isolation_level="REPEATABLE READ"))
 
     @router.post("/allocate")
     async def allocate_endpoint(request: AllocateRequestPydantic) -> dict[str, str]:

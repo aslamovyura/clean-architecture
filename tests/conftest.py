@@ -72,7 +72,7 @@ def wait_for_webapp_to_come_up():
 
 @pytest.fixture(scope="session")
 def postgres_db():
-    engine = create_engine(postgres_uri, isolation_level="REPEATABLE READ",)
+    engine = create_engine(postgres_uri, isolation_level="REPEATABLE READ")
     wait_for_postgres_to_come_up(engine)
     mapper_registry.metadata.create_all(engine)
     return engine
