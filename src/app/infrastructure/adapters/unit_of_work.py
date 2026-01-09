@@ -1,4 +1,4 @@
-from app.application.common.ports.unit_of_work import AbstractUnitOfWork
+from app.application.common.ports import AbstractUnitOfWork
 from app.infrastructure.adapters import ProductRepository
 
 

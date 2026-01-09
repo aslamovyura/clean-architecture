@@ -1,7 +1,6 @@
 from sqlalchemy import text
-from app.domain.entities import Batch, OrderLine
-from app.domain.entities.product import Product
-from app.infrastructure.adapters.product_repository import ProductRepository
+from app.domain.entities import Batch, OrderLine, Product
+from app.infrastructure.adapters import ProductRepository
 
 
 def test_repository_can_save_a_batch(session):

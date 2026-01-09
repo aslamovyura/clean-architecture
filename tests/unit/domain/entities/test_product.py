@@ -1,9 +1,8 @@
 from datetime import date, timedelta
-import pytest
 
-from app.domain.entities import Batch, Product, OrderLine
+from app.domain.entities import Batch, OrderLine, Product
 from app.domain.events.product import OutOfStockEvent
-from app.domain.exceptions import OutOfStockError
+
 
 today = date.today()
 tomorrow = today + timedelta(days=1)
