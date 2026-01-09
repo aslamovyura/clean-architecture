@@ -3,31 +3,32 @@ from __future__ import annotations
 from app.application.common.exceptions.batch import InvalidSkuError
 from app.application.common.ports.unit_of_work import AbstractUnitOfWork
 from app.application.common.services import email
+from app.domain.commands.product import AllocateCommand, ChangeBatchQuantityCommand, CreateBatchCommand
 from app.domain.entities import Product, Batch, OrderLine
-from app.domain.events.product import BatchCreatedEvent, AllocationRequiredEvent, BatchQuantityChangedEvent, OutOfStockEvent
+from app.domain.events.product import OutOfStockEvent
 
 
 
 def add_batch(
-    event: BatchCreatedEvent,
+    cmd: CreateBatchCommand,
     uow: AbstractUnitOfWork,
 ):
     with uow:
-        product = uow.products.get(sku=event.sku)
+        product = uow.products.get(sku=cmd.sku)
         if product is None:
-            product = Product(event.sku, batches=[])
+            product = Product(cmd.sku, batches=[])
             uow.products.add(product)
         product.batches.append(
-            Batch(event.ref, event.sku, event.qty, event.eta)
+            Batch(cmd.ref, cmd.sku, cmd.qty, cmd.eta)
         )
         uow.commit()
 
 
 def allocate(
-    event: AllocationRequiredEvent,
+    cmd: AllocateCommand,
     uow: AbstractUnitOfWork,
 ) -> str | None:
-    line = OrderLine(event.orderid, event.sku, event.qty)
+    line = OrderLine(cmd.orderid, cmd.sku, cmd.qty)
     with uow:
         product = uow.products.get(sku=line.sku)
         if product is None:
@@ -38,12 +39,12 @@ def allocate(
 
 
 def change_batch_quantity(
-    event: BatchQuantityChangedEvent,
+    cmd: ChangeBatchQuantityCommand,
     uow: AbstractUnitOfWork,
 ):
     with uow:
-        product = uow.products.get_by_batchref(batchref=event.ref)
-        product.change_batch_quantity(ref=event.ref, qty=event.qty)
+        product = uow.products.get_by_batchref(batchref=cmd.ref)
+        product.change_batch_quantity(ref=cmd.ref, qty=cmd.qty)
         uow.commit()
 
 

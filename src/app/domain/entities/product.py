@@ -1,14 +1,14 @@
 from typing import List
+from app.domain.commands.product import AllocateCommand
 from app.domain.entities.batch import OrderLine, Batch
 from app.domain.events import Event, OutOfStockEvent
-from app.domain.events.product import AllocationRequiredEvent
 
-class Product:
+class Product: # Aggregate
     def __init__(self, sku: str, batches: List[Batch], version_number: int = 0):
         self.sku = sku
         self.batches = batches
         self.version_number = version_number
-        self.events = []  # type: List[Event]
+        self.events = []
 
     def allocate(self, line: OrderLine) -> str | None:
         try:
@@ -26,5 +26,5 @@ class Product:
         while batch.available_quantity < 0:
             line = batch.deallocate_one()
             self.events.append(
-                AllocationRequiredEvent(line.orderid, line.sku, line.qty)
+                AllocateCommand(line.orderid, line.sku, line.qty)
             )

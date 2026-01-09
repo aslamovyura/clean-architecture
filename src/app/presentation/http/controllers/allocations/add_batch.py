@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.application.common.messages import messagebus
 from app.application.common.messages.handlers import product
-from app.domain.events.product import BatchCreatedEvent
+from app.domain.commands.product import CreateBatchCommand
 from app.infrastructure.adapters.unit_of_work import UnitOfWork
 from app.infrastructure.persistence_sqla.mappings import product
 from app.setup.config.settings import AppSettings
@@ -28,8 +28,8 @@ def create_add_batch_router(settings: AppSettings) -> APIRouter:
 
     @router.post("/add_batch")
     async def add_batch_endpoint(request: AddBatchRequestPydantic) -> dict[str, str]:
-        event = BatchCreatedEvent(request.ref, request.sku, request.qty, request.eta)
-        messagebus.handle(event, UnitOfWork(get_session))
+        cmd = CreateBatchCommand(request.ref, request.sku, request.qty, request.eta)
+        messagebus.handle(cmd, UnitOfWork(get_session))
 
         return {"status": "201"}
 

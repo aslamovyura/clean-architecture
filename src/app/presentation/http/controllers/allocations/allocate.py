@@ -5,9 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.application.common.exceptions.batch import InvalidSkuError
 from app.application.common.messages import messagebus
-from app.application.common.messages.handlers import product
-from app.domain.events.product import AllocationRequiredEvent
-from app.domain.exceptions.batch import OutOfStockError
+from app.domain.commands.product import AllocateCommand
 from app.infrastructure.adapters.unit_of_work import UnitOfWork
 from app.setup.config.settings import AppSettings
 
@@ -27,8 +25,8 @@ def create_allocate_router(settings: AppSettings) -> APIRouter:
     @router.post("/allocate")
     async def allocate_endpoint(request: AllocateRequestPydantic) -> dict[str, str | None]:
         try:
-            event = AllocationRequiredEvent(request.orderid, request.sku, request.qty)
-            results = messagebus.handle(event, UnitOfWork(get_session))
+            cmd = AllocateCommand(request.orderid, request.sku, request.qty)
+            results = messagebus.handle(cmd, UnitOfWork(get_session))
             batchref = results.pop(0)
         except InvalidSkuError as e:
             return {"message": str(e), "status": "400"}
