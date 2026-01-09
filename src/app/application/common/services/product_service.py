@@ -27,7 +27,7 @@ def add_batch(
 def allocate(
     orderid: str, sku: str, qty: int,
     uow: unit_of_work.AbstractUnitOfWork,
-) -> str:
+) -> str | None:
     line = OrderLine(orderid, sku, qty)
     with uow:
         product = uow.products.get(sku=line.sku)

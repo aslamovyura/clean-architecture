@@ -22,7 +22,7 @@ def create_allocate_router(settings: AppSettings) -> APIRouter:
     get_session = sessionmaker(bind=create_engine(settings.postgres.dsn, isolation_level="REPEATABLE READ"))
 
     @router.post("/allocate")
-    async def allocate_endpoint(request: AllocateRequestPydantic) -> dict[str, str]:
+    async def allocate_endpoint(request: AllocateRequestPydantic) -> dict[str, str | None]:
         try:
             batchref = product_service.allocate(request.orderid, request.sku, request.qty, UnitOfWork(get_session))
         except (OutOfStockError, product_service.InvalidSkuError) as e:

@@ -1,13 +1,27 @@
 import abc
+from typing import Set
 
 from app.domain.entities import Product
 
 
 class AbstractProductRepository(abc.ABC):
-    @abc.abstractmethod
+    def __init__(self):
+        self.seen = set()  # type: Set[Product]
+    
     def add(self, product: Product):
+        self._add(product)
+        self.seen.add(product)
+
+    def get(self, sku) -> Product:
+        product = self._get(sku)
+        if product:
+            self.seen.add(product)
+        return product
+    
+    @abc.abstractmethod
+    def _add(self, product: Product):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get(self, sku) -> Product:
+    def _get(self, sku) -> Product:
         raise NotImplementedError
