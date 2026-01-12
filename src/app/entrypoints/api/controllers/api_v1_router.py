@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from app.presentation.http.controllers.allocations.router import create_allocations_router
-from app.presentation.http.controllers.general.router import create_general_router
+from app.entrypoints.api.controllers.allocations.router import create_allocations_router
+from app.entrypoints.api.controllers.general.router import create_general_router
 from app.setup.config.settings import AppSettings
 
 

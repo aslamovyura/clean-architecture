@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi.responses import RedirectResponse
 
-from app.presentation.http.controllers.api_v1_router import create_api_v1_router
+from app.entrypoints.api.controllers.api_v1_router import create_api_v1_router
 from app.setup.config.settings import AppSettings
 
 

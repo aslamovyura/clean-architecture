@@ -1,7 +1,6 @@
 import abc
 
-from app.application.common.ports import AbstractProductRepository
-from app.application.common.messages import messagebus
+from app.application.common.ports.product_repository import AbstractProductRepository
 
 
 class AbstractUnitOfWork(abc.ABC):

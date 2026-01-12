@@ -1,5 +1,5 @@
 from sqlalchemy import text
-from app.domain.entities import Batch, OrderLine, Product
+from app.domain.entities import Batch, Product
 from app.infrastructure.adapters import ProductRepository
 
 

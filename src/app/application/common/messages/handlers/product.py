@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from app.application.common.exceptions.batch import InvalidSkuError
-from app.application.common.ports.unit_of_work import AbstractUnitOfWork
+from app.application.common.exceptions import InvalidSkuError
+from app.application.common.ports import AbstractUnitOfWork
 from app.application.common.services import email
-from app.domain.commands.product import AllocateCommand, ChangeBatchQuantityCommand, CreateBatchCommand
+from app.domain.commands import AllocateCommand, ChangeBatchQuantityCommand, CreateBatchCommand
 from app.domain.entities import Product, Batch, OrderLine
-from app.domain.events.product import OutOfStockEvent
+from app.domain.events import OutOfStockEvent
 
 
 

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.presentation.http.controllers.allocations import (
+from app.entrypoints.api.controllers.allocations import (
     create_add_batch_router, 
     create_allocate_router
     )

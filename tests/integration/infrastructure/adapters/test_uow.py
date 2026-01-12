@@ -6,7 +6,7 @@ import pytest
 from sqlalchemy import text
 
 from app.domain.entities import OrderLine
-from app.infrastructure.adapters import UnitOfWork
+from app.infrastructure.adapters.unit_of_work import UnitOfWork
 from tests.random_refs import random_batchref, random_orderid, random_sku
 
 

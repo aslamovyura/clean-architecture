@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.presentation.http.controllers.general.health import (
+from app.entrypoints.api.controllers.general.health import (
     create_health_router,
 )
 

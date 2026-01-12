@@ -7,7 +7,7 @@ from fastapi.responses import ORJSONResponse
 
 from app.infrastructure.persistence_sqla.mappings import map_tables
 
-from app.presentation.http.controllers.root_router import create_root_router
+from app.entrypoints.api.controllers.root_router import create_root_router
 from app.setup.config.settings import AppSettings
 # from app.setup.config.settings import AppSettings
 # from app.setup.ioc.provider_registry import get_providers
