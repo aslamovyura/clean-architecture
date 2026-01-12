@@ -21,19 +21,22 @@ def make_app(
     settings = load_settings(ValidEnvs.DEV)
     configure_logging(level=settings.logs.level)
 
-    app: FastAPI = create_web_app(settings)
+    fastapi_app: FastAPI = create_web_app(settings)
     # container = create_ioc_container(settings, *di_providers)
     # setup_dishka(container, app)
 
-    return app
+    return fastapi_app
+
+
+app = make_app()
 
 
 if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(
-        app=make_app(),
-        port=8000,
+        app=app,
+        # port=8000,
         reload=False,
         loop="uvloop",
     )
