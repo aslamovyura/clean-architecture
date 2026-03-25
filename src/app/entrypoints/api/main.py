@@ -19,6 +19,7 @@ def make_app(
     #     settings = load_settings()
 
     settings = load_settings(ValidEnvs.DEV)
+    
     configure_logging(level=settings.logs.level)
 
     fastapi_app: FastAPI = create_web_app(settings)

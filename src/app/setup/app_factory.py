@@ -1,5 +1,6 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+import logging
 
 from dishka import AsyncContainer, Provider, make_async_container
 from fastapi import FastAPI
@@ -23,6 +24,7 @@ from app.setup.config.settings import AppSettings
 #         context={AppSettings: settings},
 #     )
 
+logger = logging.getLogger(__name__)
 
 def create_web_app(settings: AppSettings) -> FastAPI:
     app = FastAPI(
@@ -31,6 +33,9 @@ def create_web_app(settings: AppSettings) -> FastAPI:
     )
     # https://github.com/encode/starlette/discussions/2451
     # app.add_middleware(ASGIAuthMiddleware)
+    
+    logger.info(f'settings: {settings.model_dump_json}')
+    logger.info(f'DB URL: {settings.postgres.dsn}')
     
     # Good place to register global exception handlers
     map_tables() 

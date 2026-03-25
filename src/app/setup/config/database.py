@@ -15,7 +15,7 @@ class PostgresSettings(BaseModel):
     port: int = Field(alias="PORT")
     driver: str = Field(alias="DRIVER")
 
-    @field_validator("host")
+    @field_validator("host") # TODO: !! this function is UNUSED!
     @classmethod
     def override_host_from_env(cls, v: str) -> str:
         postgres_host_env = os.environ.get("POSTGRES_HOST")

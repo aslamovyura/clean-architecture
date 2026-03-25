@@ -15,7 +15,8 @@ COPY config /config/
 RUN uv pip install --system -r pyproject.toml
 COPY src /app/
 
-
+# Install debugpy for debugging
+RUN pip install debugpy
 
 EXPOSE 8000
 
